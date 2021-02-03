@@ -1,10 +1,14 @@
 import React from "react";
+//style buttons
+import { ButtonWrapper } from "../App.styles";
 
 const Buttons = () => {
   return (
     <div>
-      <button>Go</button>
-      <button>Reset</button>
+      <ButtonWrapper>
+        <button>Go</button>
+        <button>Reset</button>
+      </ButtonWrapper>
     </div>
   );
 };
