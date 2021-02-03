@@ -5,20 +5,30 @@ import Buttons from "./components/Buttons";
 import Console from "./components/Console";
 import Board from "./components/Board";
 //import styles
-import { GlobalStyle } from "./App.styles";
+import {
+  GlobalStyle,
+  CompleteWrapper,
+  InfoBox,
+  Wrapper,
+  LeftWrapper,
+} from "./App.styles";
 
 const App = () => {
   return (
-    <>
+    <div className="App">
       <GlobalStyle />
-      <div className="App">
-        <div>Toy Robot Simulator</div>
-        <Input />
-        <Buttons />
-        <Console />
-        <Board />
-      </div>
-    </>
+      <CompleteWrapper>
+        <InfoBox>Toy Robot Simulator</InfoBox>
+        <Wrapper>
+          <LeftWrapper>
+            <Input />
+            <Buttons />
+            <Console />
+          </LeftWrapper>
+          <Board />
+        </Wrapper>
+      </CompleteWrapper>
+    </div>
   );
 };
 
