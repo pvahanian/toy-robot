@@ -1,19 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
+import { useRecoilState } from "recoil";
 //state
-import { commandInput } from "../store/Atom.js";
+import { commandInput, invokeFunc } from "../store/Atom";
 
 const Input: React.FC = () => {
-  const [command, setCommand] = useState({ robotCommands: "" });
+  // const [command, setCommand] = useState({ robotCommands: "" });
+  const [command, setCommand] = useRecoilState(commandInput);
+  const [invoke, setInvoke] = useRecoilState(invokeFunc);
 
+  // React.MouseEvent<HTMLButtonElement>
   const onSubmit = (e: any) => {
     e.preventDefault();
-    // e.target.reset();
-  };
-  // React.FormEvent<HTMLButtonElement>
-  const handleChange = (e: any) => {
-    setCommand({ ...command, [e.target.name]: e.target.value });
+    setInvoke(true);
+    e.target.reset();
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCommand(e.target.value);
+  };
+
+  console.log(invoke);
   console.log(command);
 
   return (
