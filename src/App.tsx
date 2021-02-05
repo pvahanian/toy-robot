@@ -1,4 +1,5 @@
 import React from "react";
+import { RecoilRoot } from "recoil";
 //import components
 import Input from "./components/Input";
 import Buttons from "./components/Buttons";
@@ -15,20 +16,22 @@ import {
 
 const App = () => {
   return (
-    <div className="App">
-      <GlobalStyle />
-      <CompleteWrapper>
-        <InfoBox>Toy Robot Simulator</InfoBox>
-        <Wrapper>
-          <LeftWrapper>
-            <Input />
-            <Buttons />
-            <Console />
-          </LeftWrapper>
-          <Board />
-        </Wrapper>
-      </CompleteWrapper>
-    </div>
+    <RecoilRoot>
+      <div className="App">
+        <GlobalStyle />
+        <CompleteWrapper>
+          <InfoBox>Toy Robot Simulator</InfoBox>
+          <Wrapper>
+            <LeftWrapper>
+              <Input />
+              <Buttons />
+              <Console />
+            </LeftWrapper>
+            <Board />
+          </Wrapper>
+        </CompleteWrapper>
+      </div>
+    </RecoilRoot>
   );
 };
 
