@@ -36,9 +36,9 @@ export const INITIAL_ROTATE_DEG: RotateDeg = {
   WEST: 270,
 };
 
-export const FACING_DIRECTIONS = Object.keys(ORIENTATION);
+export const FACING_DIRECTIONS: string[] = ["NORTH", "EAST", "SOUTH", "WEST"];
 
-export const COMMANDS = ["PLACE", "MOVE", "LEFT", "RIGHT", "REPORT"];
+export const COMMANDS: string[] = ["PLACE", "MOVE", "LEFT", "RIGHT", "REPORT"];
 
 export const ERRORS = {
   invalidCommand: `Invalid command format. Available commands are ${COMMANDS.join(
@@ -50,8 +50,8 @@ export const ERRORS = {
   wrongDirection: `Invalid facing direction value. Available directions should be ${FACING_DIRECTIONS.join(
     " | "
   )}.`,
-  wrongCoordinate: `Invalid coordinate value. It must be non-negative integer.`,
-  wrongMovingDirection: `The robot can't move forward on that direction, it may fall off the table.`,
+  wrongCoordinate: `Invalid coordinate value. Try numbers between 0 and 4.`,
+  nextCommand: `Enter another command to keep moving the robot!`,
 };
 
 export const DESCRIPTIONS = [
