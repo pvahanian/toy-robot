@@ -4,8 +4,10 @@ import { useRecoilState } from "recoil";
 import {
   commandInput,
   modifiedCommandInput,
+  onBoard,
   boardPosition,
   initError,
+  robotFacingDirection,
 } from "../store/Atom";
 //import constants from staysTheSame
 import * as STAYSTHESAME from "../staysTheSame/index";
@@ -18,42 +20,82 @@ const Input: React.FC = () => {
   const [modifiedCommand, setModifiedCommand] = useRecoilState(
     modifiedCommandInput
   );
+  const [robotOnTheBoard, setRobotOnTheBoard] = useRecoilState(onBoard);
   const [initErrors, setInitErrors] = useRecoilState(initError);
+  const [boardPositions, setBoardPositions] = useRecoilState(boardPosition);
+  const [robotDirection, setRobotDirection] = useRecoilState(
+    robotFacingDirection
+  );
 
-  //Robot control logic:
+  //useEffect to set state for and to control Robot logic:
   useEffect(() => {
     let initInput: string = modifiedCommand[0];
-    //build switch statement that does:
-    switch (initInput) {
-      case "PLACE":
-        setInitErrors("PLACE");
-        break;
-      case "MOVE":
-        setInitErrors("MOVE");
-        break;
-      case "LEFT":
-        setInitErrors("LEFT");
-        break;
-      case "RIGHT":
-        setInitErrors("RIGHT");
-        break;
-      case "REPORT":
-        setInitErrors("REPORT");
-        break;
-      default:
-        setInitErrors(
-          "Invalid PLACE command. Your PLACE command should be 'PLACE X,Y,F'"
-        );
+    let xAxisValue: number = modifiedCommand[1];
+    let yAxisValue: number = modifiedCommand[2];
+    let directionFacing: string = modifiedCommand[3];
+
+    //Switch statement that checks commands - logic to control errors and robots within each case:
+    if (initInput === "PLACE") {
+      setRobotOnTheBoard(true);
     }
-  }, [modifiedCommand, setInitErrors]);
+    if (robotOnTheBoard) {
+      switch (initInput) {
+        case "PLACE":
+          if (xAxisValue <= 4 && yAxisValue <= 4) {
+            setBoardPositions({
+              x: xAxisValue,
+              y: yAxisValue,
+            });
+            setInitErrors(STAYSTHESAME.ERRORS.nextCommand);
+            if (STAYSTHESAME.FACING_DIRECTIONS.includes(directionFacing)) {
+              setRobotDirection(directionFacing);
+              setInitErrors(STAYSTHESAME.ERRORS.nextCommand);
+            } else {
+              setInitErrors(STAYSTHESAME.ERRORS.wrongDirection);
+            }
+          } else {
+            setInitErrors(STAYSTHESAME.ERRORS.wrongCoordinate);
+          }
+          break;
+        case "LEFT":
+          setInitErrors("LEFT");
+          break;
+        case "RIGHT":
+          setInitErrors("RIGHT");
+          break;
+        case "MOVE":
+          setInitErrors("MOVE");
+          break;
+        case "REPORT":
+          setInitErrors("REPORT");
+          break;
+        default:
+          setInitErrors(
+            "Enter PLACE,X,Y,F to start. This will put the robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST, "
+          );
+      }
+    } else {
+      setInitErrors(
+        "Enter PLACE X,Y,F - will put the toy robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST."
+      );
+    }
+  }, [
+    modifiedCommand,
+    setInitErrors,
+    robotOnTheBoard,
+    setRobotOnTheBoard,
+    setBoardPositions,
+    setRobotDirection,
+  ]);
 
   // React.MouseEvent<HTMLButtonElement> - I know I need to use this but can't make it work - How do I do it correctly?
   //Handles the onClick mouse event - Splits input command string into an array of strings. Sets that new array to 'modified command' state
   const onSubmit = (e: any) => {
     e.preventDefault();
     let splitStringCommand = (input: string) => {
-      let a: any = input.split(",");
-      setModifiedCommand(a);
+      let initialString: any = input.split(",");
+      let arrayOfStrings: any = initialString.map((s: string) => s.trim());
+      setModifiedCommand(arrayOfStrings);
     };
     splitStringCommand(command);
     e.target.reset();
@@ -77,6 +119,10 @@ const Input: React.FC = () => {
         <button>Go</button>
       </form>
       <p>{initErrors}</p>
+      <p>{robotOnTheBoard}</p>
+      <p>{boardPositions.x}</p>
+      <p>{boardPositions.y}</p>
+      <p>{robotDirection}</p>
     </div>
   );
 };

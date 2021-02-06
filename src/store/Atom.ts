@@ -18,10 +18,10 @@ export const modifiedCommandInput = atom({
   default: [],
 });
 
-//Invoke checking function state
+//Is the robot on the board?
 
-export const invokeFunc = atom({
-  key: "invokeFunc",
+export const onBoard = atom({
+  key: "onBoard",
   default: false,
 });
 
@@ -36,6 +36,11 @@ export const boardPosition = atom({
 });
 
 //Robot direction state
+
+export const robotFacingDirection = atom({
+  key: "robotFacingDirection",
+  default: "",
+});
 
 //initError
 export const initError = atom({
