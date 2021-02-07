@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 //state
 import {
@@ -26,7 +26,7 @@ const Input: React.FC = () => {
   const [robotDirection, setRobotDirection] = useRecoilState(
     robotFacingDirection
   );
-  console.log("1", robotDirection);
+  let [newCommand, setNewCommand] = useState(true);
 
   //useEffect to set state for and to control Robot logic:
   useEffect(() => {
@@ -40,7 +40,7 @@ const Input: React.FC = () => {
     if (initInput === "PLACE") {
       setRobotOnTheBoard(true);
     }
-    if (robotOnTheBoard) {
+    if (robotOnTheBoard && newCommand) {
       switch (initInput) {
         //place the robot on the board
         case "PLACE":
@@ -81,6 +81,7 @@ const Input: React.FC = () => {
               setRobotDirection("SOUTH");
               break;
           }
+          setNewCommand(false);
           break;
         //turn right
         case "RIGHT":
@@ -98,6 +99,7 @@ const Input: React.FC = () => {
               setRobotDirection("NORTH");
               break;
           }
+          setNewCommand(false);
           break;
         //move around table
         case "MOVE":
@@ -174,6 +176,7 @@ const Input: React.FC = () => {
     };
     splitStringCommand(command);
     e.target.reset();
+    setNewCommand(true);
   };
 
   //Handles user input commands and sets them to 'command' state
@@ -192,12 +195,13 @@ const Input: React.FC = () => {
           placeholder="Take the robot for a spin!"
         />
         <button>Go</button>
+        <button>Reset</button>
       </form>
-      <p>{initErrors}</p>
+      {/* <p>{initErrors}</p> */}
       <p>{robotOnTheBoard}</p>
-      <p>{boardPositions.x}</p>
-      <p>{boardPositions.y}</p>
-      <p>{robotDirection}</p>
+      <p>x: {boardPositions.x}</p>
+      <p>y: {boardPositions.y}</p>
+      <p>Facing: {robotDirection}</p>
     </div>
   );
 };
