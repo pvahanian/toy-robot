@@ -18,14 +18,14 @@ export const TABLE_DIMENSION: TableDimension = {
 
 export interface Facing extends CoordinateObject {}
 
-export type Orientation = Record<Direction | string, CoordinateObject>;
+// export type Orientation = Record<Direction | string, CoordinateObject>;
 
-export const ORIENTATION: Orientation = {
-  NORTH: { x: 0, y: 1 },
-  EAST: { x: 1, y: 0 },
-  SOUTH: { x: 0, y: -1 },
-  WEST: { x: -1, y: 0 },
-};
+// export const ORIENTATION: Orientation = {
+//   NORTH: { x: 0, y: 1 },
+//   EAST: { x: 1, y: 0 },
+//   SOUTH: { x: 0, y: -1 },
+//   WEST: { x: -1, y: 0 },
+// };
 
 export type RotateDeg = Record<Direction | string, number>;
 

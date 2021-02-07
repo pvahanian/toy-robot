@@ -26,12 +26,14 @@ const Input: React.FC = () => {
   const [robotDirection, setRobotDirection] = useRecoilState(
     robotFacingDirection
   );
+  console.log("1", robotDirection);
 
   //useEffect to set state for and to control Robot logic:
   useEffect(() => {
+    //take user input command array and assign index values to new variables
     let initInput: string = modifiedCommand[0];
-    let xAxisValue: number = modifiedCommand[1];
-    let yAxisValue: number = modifiedCommand[2];
+    let xAxisValue: any = modifiedCommand[1];
+    let yAxisValue: any = modifiedCommand[2];
     let directionFacing: string = modifiedCommand[3];
 
     //Switch statement that checks commands - logic to control errors and robots within each case:
@@ -40,11 +42,17 @@ const Input: React.FC = () => {
     }
     if (robotOnTheBoard) {
       switch (initInput) {
+        //place the robot on the board
         case "PLACE":
-          if (xAxisValue <= 4 && yAxisValue <= 4) {
+          if (
+            xAxisValue >= 0 &&
+            xAxisValue <= 4 &&
+            yAxisValue >= 0 &&
+            yAxisValue <= 4
+          ) {
             setBoardPositions({
-              x: xAxisValue,
-              y: yAxisValue,
+              x: parseInt(xAxisValue, 10),
+              y: parseInt(yAxisValue, 10),
             });
             setInitErrors(STAYSTHESAME.ERRORS.nextCommand);
             if (STAYSTHESAME.FACING_DIRECTIONS.includes(directionFacing)) {
@@ -57,17 +65,83 @@ const Input: React.FC = () => {
             setInitErrors(STAYSTHESAME.ERRORS.wrongCoordinate);
           }
           break;
+        //turn left
         case "LEFT":
-          setInitErrors("LEFT");
+          switch (robotDirection) {
+            case "NORTH":
+              setRobotDirection("WEST");
+              break;
+            case "EAST":
+              setRobotDirection("NORTH");
+              break;
+            case "SOUTH":
+              setRobotDirection("EAST");
+              break;
+            case "WEST":
+              setRobotDirection("SOUTH");
+              break;
+          }
           break;
+        //turn right
         case "RIGHT":
-          setInitErrors("RIGHT");
+          switch (robotDirection) {
+            case "NORTH":
+              setRobotDirection("EAST");
+              break;
+            case "EAST":
+              setRobotDirection("SOUTH");
+              break;
+            case "SOUTH":
+              setRobotDirection("WEST");
+              break;
+            case "WEST":
+              setRobotDirection("NORTH");
+              break;
+          }
           break;
+        //move around table
         case "MOVE":
-          setInitErrors("MOVE");
+          //check which direction robot is facing
+          switch (robotDirection) {
+            case "NORTH":
+              if (boardPositions.y < STAYSTHESAME.TABLE_DIMENSION.y - 1) {
+                setBoardPositions({
+                  x: boardPositions.x,
+                  y: boardPositions.y + 1,
+                });
+              }
+              break;
+            case "EAST":
+              if (boardPositions.x < STAYSTHESAME.TABLE_DIMENSION.x - 1) {
+                setBoardPositions({
+                  x: boardPositions.x + 1,
+                  y: boardPositions.y,
+                });
+              }
+              break;
+            case "SOUTH":
+              if (boardPositions.y > 0) {
+                setBoardPositions({
+                  x: boardPositions.x,
+                  y: boardPositions.y - 1,
+                });
+              }
+              break;
+            case "WEST":
+              if (boardPositions.x > 0) {
+                setBoardPositions({
+                  x: boardPositions.x - 1,
+                  y: boardPositions.y,
+                });
+              }
+              break;
+          }
           break;
+        //report where robot is
         case "REPORT":
-          setInitErrors("REPORT");
+          console.log(
+            `Robot at: X: ${boardPositions.x}, Y: ${boardPositions.y}. Facing: ${robotDirection}`
+          );
           break;
         default:
           setInitErrors(
@@ -85,6 +159,7 @@ const Input: React.FC = () => {
     robotOnTheBoard,
     setRobotOnTheBoard,
     setBoardPositions,
+    robotDirection,
     setRobotDirection,
   ]);
 
