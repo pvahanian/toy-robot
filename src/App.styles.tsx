@@ -1,6 +1,5 @@
 import styled, { createGlobalStyle } from "styled-components";
 import BackgroundImage from "./images/daniel-cheung.jpg";
-import { INSTRUCTIONS } from "./staysTheSame/index";
 
 export const GlobalStyle = createGlobalStyle`
     html {
