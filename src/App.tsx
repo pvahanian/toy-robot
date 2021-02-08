@@ -2,7 +2,7 @@ import React from "react";
 import { RecoilRoot } from "recoil";
 //import components
 import Input from "./components/Input";
-import Buttons from "./components/Buttons";
+
 import Console from "./components/Console";
 import Board from "./components/Board";
 //import styles
@@ -24,7 +24,7 @@ const App = () => {
           <Wrapper>
             <LeftWrapper>
               <Input />
-              <Buttons />
+
               <Console />
             </LeftWrapper>
             <Board />

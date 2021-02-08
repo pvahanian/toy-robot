@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 //state
 import {
@@ -8,27 +8,64 @@ import {
   boardPosition,
   initError,
   robotFacingDirection,
+  consoleReport,
 } from "../store/Atom";
 //import constants from staysTheSame
 import * as STAYSTHESAME from "../staysTheSame/index";
-import Console from "./Console";
 
-//Component
+//***COMPONENT***
 const Input: React.FC = () => {
-  //Set recoil state
+  //***STATE***
+  //user input string
   const [command, setCommand] = useRecoilState(commandInput);
+  //user input string split into an array of strings
   const [modifiedCommand, setModifiedCommand] = useRecoilState(
     modifiedCommandInput
   );
+  //is the robot on the board?
   const [robotOnTheBoard, setRobotOnTheBoard] = useRecoilState(onBoard);
+  //error handler
   const [initErrors, setInitErrors] = useRecoilState(initError);
+  //x and y coords
   const [boardPositions, setBoardPositions] = useRecoilState(boardPosition);
+  //which direction is the robot facing?
   const [robotDirection, setRobotDirection] = useRecoilState(
     robotFacingDirection
   );
-  console.log("1", robotDirection);
+  //string to store where on the board the robot currently is
+  const [reportRobotPosition, setReportRobotPosition] = useRecoilState(
+    consoleReport
+  );
+  //true/false gate to control allow left/right commands to change robot direction
+  let [newCommand, setNewCommand] = useState(true);
 
-  //useEffect to set state for and to control Robot logic:
+  //***FORM FUNCTIONS***
+  //Takes user input commands and sets them to 'command' state
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCommand(e.target.value.toUpperCase());
+  };
+
+  // React.MouseEvent<HTMLButtonElement> - I know I need to use this but can't make it work - How do I do it correctly?
+  //Handles the onClick mouse event - Splits the users input 'command string' into an array of strings. Sets that new array to 'modified command' state
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    //declare a function to split the users input command into an array of strings
+    let splitStringCommand = (input: string) => {
+      let initialString: any = input.split(",");
+      let arrayOfStrings: any = initialString.map((s: string) => s.trim());
+      setModifiedCommand(arrayOfStrings);
+    };
+    //invoke the splitStringCommand function with the users input string (set as 'command' state in the handleChange function above)
+    splitStringCommand(command);
+    setNewCommand(true);
+    e.target.reset();
+    console.log(command);
+    setCommand("");
+  };
+
+  //***ROBOT CONTROL LOGIC***
+
+  //useEffect - sets user input to state and handles robot control logic:
   useEffect(() => {
     //take user input command array and assign index values to new variables
     let initInput: string = modifiedCommand[0];
@@ -36,11 +73,12 @@ const Input: React.FC = () => {
     let yAxisValue: any = modifiedCommand[2];
     let directionFacing: string = modifiedCommand[3];
 
-    //Switch statement that checks commands - logic to control errors and robots within each case:
+    //Is the first command PLACE?
     if (initInput === "PLACE") {
       setRobotOnTheBoard(true);
     }
-    if (robotOnTheBoard) {
+    if (robotOnTheBoard && newCommand) {
+      //Switch statement that checks commands - logic to control errors and robots within each case:
       switch (initInput) {
         //place the robot on the board
         case "PLACE":
@@ -81,6 +119,8 @@ const Input: React.FC = () => {
               setRobotDirection("SOUTH");
               break;
           }
+          setNewCommand(false);
+          setInitErrors(STAYSTHESAME.ERRORS.nextCommand);
           break;
         //turn right
         case "RIGHT":
@@ -98,10 +138,13 @@ const Input: React.FC = () => {
               setRobotDirection("NORTH");
               break;
           }
+          setNewCommand(false);
+          setInitErrors(STAYSTHESAME.ERRORS.nextCommand);
+
           break;
-        //move around table
+        //move Robot around the table logic
         case "MOVE":
-          //check which direction robot is facing
+          //check which direction robot is facing then (depending on the direction) move the robot 1 square or throw an error
           switch (robotDirection) {
             case "NORTH":
               if (boardPositions.y < STAYSTHESAME.TABLE_DIMENSION.y - 1) {
@@ -109,6 +152,8 @@ const Input: React.FC = () => {
                   x: boardPositions.x,
                   y: boardPositions.y + 1,
                 });
+              } else {
+                setInitErrors(STAYSTHESAME.ERRORS.wrongWay);
               }
               break;
             case "EAST":
@@ -117,6 +162,8 @@ const Input: React.FC = () => {
                   x: boardPositions.x + 1,
                   y: boardPositions.y,
                 });
+              } else {
+                setInitErrors(STAYSTHESAME.ERRORS.wrongWay);
               }
               break;
             case "SOUTH":
@@ -125,6 +172,8 @@ const Input: React.FC = () => {
                   x: boardPositions.x,
                   y: boardPositions.y - 1,
                 });
+              } else {
+                setInitErrors(STAYSTHESAME.ERRORS.wrongWay);
               }
               break;
             case "WEST":
@@ -133,12 +182,17 @@ const Input: React.FC = () => {
                   x: boardPositions.x - 1,
                   y: boardPositions.y,
                 });
+              } else {
+                setInitErrors(STAYSTHESAME.ERRORS.wrongWay);
               }
               break;
           }
           break;
         //report where robot is
         case "REPORT":
+          setReportRobotPosition(
+            `Robot at: X: ${boardPositions.x}, Y: ${boardPositions.y}. Facing: ${robotDirection}`
+          );
           console.log(
             `Robot at: X: ${boardPositions.x}, Y: ${boardPositions.y}. Facing: ${robotDirection}`
           );
@@ -148,10 +202,6 @@ const Input: React.FC = () => {
             "Enter PLACE,X,Y,F to start. This will put the robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST, "
           );
       }
-    } else {
-      setInitErrors(
-        "Enter PLACE X,Y,F - will put the toy robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST."
-      );
     }
   }, [
     modifiedCommand,
@@ -159,45 +209,23 @@ const Input: React.FC = () => {
     robotOnTheBoard,
     setRobotOnTheBoard,
     setBoardPositions,
-    robotDirection,
     setRobotDirection,
+    robotDirection,
+    reportRobotPosition,
   ]);
-
-  // React.MouseEvent<HTMLButtonElement> - I know I need to use this but can't make it work - How do I do it correctly?
-  //Handles the onClick mouse event - Splits input command string into an array of strings. Sets that new array to 'modified command' state
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    let splitStringCommand = (input: string) => {
-      let initialString: any = input.split(",");
-      let arrayOfStrings: any = initialString.map((s: string) => s.trim());
-      setModifiedCommand(arrayOfStrings);
-    };
-    splitStringCommand(command);
-    e.target.reset();
-  };
-
-  //Handles user input commands and sets them to 'command' state
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCommand(e.target.value.toUpperCase());
-  };
 
   return (
     <div>
-      <div>Tell the robot what to do...</div>
       <form onSubmit={onSubmit}>
         <input
           onChange={handleChange}
+          className="inputBox"
           name="robotCommands"
           type="text"
           placeholder="Take the robot for a spin!"
         />
-        <button>Go</button>
+        <button className="goButton">Go</button>
       </form>
-      <p>{initErrors}</p>
-      <p>{robotOnTheBoard}</p>
-      <p>{boardPositions.x}</p>
-      <p>{boardPositions.y}</p>
-      <p>{robotDirection}</p>
     </div>
   );
 };
