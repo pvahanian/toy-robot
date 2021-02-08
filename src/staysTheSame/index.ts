@@ -16,17 +16,6 @@ export const TABLE_DIMENSION: TableDimension = {
   y: 5,
 };
 
-export interface Facing extends CoordinateObject {}
-
-// export type Orientation = Record<Direction | string, CoordinateObject>;
-
-// export const ORIENTATION: Orientation = {
-//   NORTH: { x: 0, y: 1 },
-//   EAST: { x: 1, y: 0 },
-//   SOUTH: { x: 0, y: -1 },
-//   WEST: { x: -1, y: 0 },
-// };
-
 export type RotateDeg = Record<Direction | string, number>;
 
 export const INITIAL_ROTATE_DEG: RotateDeg = {
@@ -41,16 +30,13 @@ export const FACING_DIRECTIONS: string[] = ["NORTH", "EAST", "SOUTH", "WEST"];
 export const COMMANDS: string[] = ["PLACE", "MOVE", "LEFT", "RIGHT", "REPORT"];
 
 export const ERRORS = {
-  invalidCommand: `Invalid command format. Available commands are ${COMMANDS.join(
-    " | "
-  )}.`,
   invalidInitialCommand: `Invalid PLACE command format. The valid PLACE command should be 'PLACE X,Y,F'.`,
   notInitialized: `The robot is not placed on the table yet. Place it first with 'PLACE X,Y,F'`,
-  wrongPlace: `The robot was placed out of the table`,
   wrongDirection: `Invalid facing direction value. Available directions should be ${FACING_DIRECTIONS.join(
     " | "
   )}.`,
-  wrongCoordinate: `Invalid coordinate value. Try numbers between 0 and 4.`,
+  wrongCoordinate: `Invalid command. Try changing your PLACE command to PLACE X,Y,F.`,
+  wrongWay: "Can't move the Robot this way. It would fall off the table",
   nextCommand: `Enter another command to keep moving the robot!`,
 };
 

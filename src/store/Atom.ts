@@ -4,11 +4,11 @@ import { atom } from "recoil";
 //"Tell the robot what to do" state
 type Default = string;
 
-const initState: Default = "";
+const initCommandState: Default = "";
 
 export const commandInput = atom({
   key: "commandInput",
-  default: initState,
+  default: initCommandState,
 });
 
 //Take the user input command and turn it into an array of strings
@@ -37,9 +37,29 @@ export const boardPosition = atom({
 
 //Robot direction state
 
+const initRobotFacingState: Default = "";
+
 export const robotFacingDirection = atom({
   key: "robotFacingDirection",
-  default: "",
+  default: initRobotFacingState,
+});
+
+//Report state for robots current location
+
+const initConsoleReportState: Default = "";
+
+export const consoleReport = atom({
+  key: "consoleReport",
+  default: initConsoleReportState,
+});
+
+//State to hold the id (string) value for which box the robot is currently in
+
+const initIdValueState: any = null;
+
+export const idValue = atom({
+  key: "idValue",
+  default: initIdValueState,
 });
 
 //initError
