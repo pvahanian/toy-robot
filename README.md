@@ -66,6 +66,6 @@ Instructions on how to run the project
 All relevant tests
 
 # How to use and install
-Clone repo to your local machine 
+Clone repo to your local machine,  
 cd into the directiory and run "npm start". Your browser will open and you can start entering commands! 
 First command must be: PLACE X,Y,F (example: PLACE,0,0,NORTH)
