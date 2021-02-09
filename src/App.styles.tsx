@@ -20,11 +20,61 @@ export const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
         font-family: 'Catamaran', sans-serif;
     }
+    .instructions{
+      background-color:whitesmoke;
+      opacity: 75%;
+      width: 90%;
+    }
+    .consoleClass{
+      margin: 10px;
+    }
+    .play-area{
+      display:flex;
+      flex-direction:row;
+      flex-wrap:wrap;
+      width:300px;
+    }
+    .block{
+      background-color:lightgrey;
+      width:50px;
+      height:50px;
+      border:1px solid black;
+    }
+    .row{
+      display:flex;
+      flex-direction:row;
+    }
+    .robotZombie{
+      background-image: url("https://svgur.com/i/Tqb.svg") !important;
+      background-size:cover;
+      z-index:2 !important;
+    }
+    .rotateZombieNorth{
+      transform: rotate(0deg) !important;
+    }
+    .rotateZombieEast{
+      transform: rotate(90deg) !important;
+    }
+    .rotateZombieSouth{
+      transform: rotate(180deg) !important;
+    } 
+    .rotateZombieWest{
+      transform: rotate(270deg) !important;
+    }
+    .goButton{
+      margin-left:2px;
+      width:6vw;
+      border:1px solid black;
+    }
+    .inputBox{
+      width:40vw;
+    }
 `;
 
 export const InfoBox = styled.div`
-  border: 1px solid brown;
   height: 100px;
+  text-align: center;
+  font-size: 5vw;
 `;
 
 export const CompleteWrapper = styled.div`
@@ -33,24 +83,19 @@ export const CompleteWrapper = styled.div`
 `;
 
 export const Wrapper = styled.div`
-  border: 1px solid orange;
   display: flex;
   justify-content: space-between;
 `;
 
 export const LeftWrapper = styled.div`
-  border: 1px solid green;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `;
 
-export const InputBox = styled.div`
-  border: 1px solid red;
-`;
+export const InputBox = styled.div``;
 
 export const ButtonWrapper = styled.div`
-  border: 1px solid yellow;
   display: flex;
   justify-content: space-around;
 `;
